@@ -1,0 +1,15 @@
+{
+  "name": "art-platform-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:ai": "python3 -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload --app-dir apps/ai",
+    "dev:server": "npm --prefix apps/server run dev",
+    "dev:web": "npm --prefix apps/web run dev",
+    "dev": "concurrently -n AI,API,WEB -c cyan,magenta,green \"npm:dev:ai\" \"npm:dev:server\" \"npm:dev:web\""
+  },
+  "devDependencies": {
+    "concurrently": "9.1.0"
+  }
+}
+

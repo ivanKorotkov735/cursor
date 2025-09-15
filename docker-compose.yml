@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  ai:
+    build: ./apps/ai
+    ports:
+      - '8000:8000'
+  server:
+    build: ./apps/server
+    environment:
+      - AI_URL=http://ai:8000
+      - STORAGE_DIR=/data/artworks
+    volumes:
+      - artdata:/data/artworks
+    ports:
+      - '4000:4000'
+    depends_on:
+      - ai
+  web:
+    build: ./apps/web
+    environment:
+      - NEXT_PUBLIC_API_BASE=http://localhost:4000
+    ports:
+      - '3000:3000'
+    depends_on:
+      - server
+volumes:
+  artdata:
+

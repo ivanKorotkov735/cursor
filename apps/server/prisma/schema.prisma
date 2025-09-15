@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Artwork {
+  id           String   @id @default(cuid())
+  title        String?
+  description  String?
+  filename     String
+  filepath     String
+  mimetype     String
+  size         Int
+  createdAt    DateTime @default(now())
+  priceCents   Int      @default(500)
+  userId       String?
+  author       User?    @relation(fields: [userId], references: [id])
+  verification Verification?
+  orders       Order[]
+}
+
+model Verification {
+  id            String  @id @default(cuid())
+  modelVersion  String
+  scoreHuman    Float
+  verdict       String
+  explanations  String?
+  artworkId     String  @unique
+  artwork       Artwork @relation(fields: [artworkId], references: [id])
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  password  String
+  createdAt DateTime  @default(now())
+  artworks  Artwork[]
+  orders    Order[]
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  artworkId     String
+  artwork       Artwork  @relation(fields: [artworkId], references: [id])
+  buyerId       String?
+  buyer         User?    @relation(fields: [buyerId], references: [id])
+  amountCents   Int
+  currency      String   @default("usd")
+  status        String   @default("pending")
+  stripeSession String?
+  createdAt     DateTime @default(now())
+}
+
